@@ -99,17 +99,25 @@ function NotesView() {
       return;
     }
     if (mySigner.signed) return;
-    await supabase
+
+    const { error: signErr } = await supabase
       .from("note_signers")
       .update({ signed: true, signed_at: new Date().toISOString() })
       .eq("id", mySigner.id);
-    // Auto-set done když všichni podepsali
-    const allSigned = note.signers
-      .filter((s) => s.id !== mySigner.id)
-      .every((s) => s.signed);
-    if (allSigned) {
+    if (signErr) {
+      alert("Chyba podpisu: " + signErr.message);
+      return;
+    }
+
+    // Re-fetch signery z DB (lokální stav může být stale, když podepsal někdo souběžně)
+    const { data: fresh } = await supabase
+      .from("note_signers")
+      .select("signed")
+      .eq("note_id", note.id);
+    if (fresh && fresh.length > 0 && fresh.every((s) => s.signed)) {
       await supabase.from("notes").update({ done: true }).eq("id", note.id);
     }
+
     load();
   };
 

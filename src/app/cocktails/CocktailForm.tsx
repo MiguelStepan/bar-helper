@@ -4,6 +4,8 @@ import { useState } from "react";
 import { supabase, COCKTAIL_BUCKET } from "@/lib/supabase";
 import type { Cocktail } from "@/lib/types";
 
+const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+
 type Props = {
   cocktail?: Cocktail;
   onSaved: (id: number) => void;
@@ -19,6 +21,11 @@ export function CocktailForm({ cocktail, onSaved, onCancel }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const upload = async (file: File) => {
+    if (file.size > MAX_UPLOAD_BYTES) {
+      const mb = (file.size / 1024 / 1024).toFixed(1);
+      setError(`Fotka je moc velká (${mb} MB). Maximum je 5 MB.`);
+      return;
+    }
     setUploading(true);
     setError(null);
     const ext = file.name.split(".").pop() ?? "jpg";
