@@ -1,8 +1,26 @@
-# PRD Vibe Kit
+# Bar Helper
 
-Předpřipravený kit s AI agenty pro **Product Vibe Coding** workshop.
+Webová appka pro obsluhu baru — checklisty (otevření / zavření), recepty s fotkami a postupy, a lepíky mezi směnami od majitele i mezi sebou. Kioskový režim: každý si na začátku směny vybere svůj profil, žádná hesla.
 
-Žádný kód, žádná appka — jen agenti a pravidla. Všechno si vygeneruješ sám z vlastního PRD.
+## Stack
+Next.js 15 (App Router) + Supabase (Postgres + Storage) + Tailwind + Vercel
+
+## Lokální vývoj
+```bash
+npm install
+npm run dev
+```
+
+Před prvním spuštěním:
+1. Spusť `migrations/001_initial.sql` v DEV Supabase projektu (SQL Editor).
+2. V Supabase dashboardu vytvoř Storage bucket `cocktail-images` jako **Public**.
+3. `.env.local` doplň `NEXT_PUBLIC_SUPABASE_URL` a `NEXT_PUBLIC_SUPABASE_ANON_KEY` (DEV projekt).
+
+---
+
+## Workshop kit (původní README)
+
+Tento projekt vznikl ze [`prd-vibe-kit`](https://github.com/jirkasemmler/prd-vibe-kit) — předpřipravený kit s AI agenty pro **Product Vibe Coding** workshop.
 
 ## Quick Start
 
