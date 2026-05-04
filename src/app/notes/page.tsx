@@ -157,6 +157,14 @@ function NotesView() {
     load();
   };
 
+  const togglePin = async (note: NoteWithSigners) => {
+    await supabase
+      .from("notes")
+      .update({ pinned: !note.pinned })
+      .eq("id", note.id);
+    load();
+  };
+
   const remove = async (noteId: number) => {
     if (!confirm("Smazat lepík?")) return;
     await supabase.from("notes").delete().eq("id", noteId);
@@ -166,8 +174,9 @@ function NotesView() {
   const filtered = notes
     .filter((n) => (tab === "active" ? !n.done : n.done))
     .sort((a, b) => {
-      // Aktivní: priorita desc, pak created_at desc. Archiv: jen created_at desc.
+      // Aktivní: pinned → priorita → created_at desc. Archiv: jen created_at desc.
       if (tab === "active") {
+        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
         const pa = PRIORITY_WEIGHT[a.priority] ?? 1;
         const pb = PRIORITY_WEIGHT[b.priority] ?? 1;
         if (pa !== pb) return pb - pa;
@@ -304,12 +313,20 @@ function NotesView() {
           return (
             <article
               key={n.id}
-              className={`flex flex-col gap-3 rounded-3xl border p-5 shadow-md ${
+              className={`relative flex flex-col gap-3 rounded-3xl border p-5 shadow-md ${
                 n.done
                   ? "border-slate-200/70 bg-slate-100/60 shadow-slate-200/40 dark:border-slate-800/70 dark:bg-slate-900/40 dark:shadow-black/30"
                   : PRIORITY_CARD[n.priority]
-              }`}
+              } ${n.pinned && !n.done ? "ring-2 ring-slate-900/10 dark:ring-white/20" : ""}`}
             >
+              {n.pinned && !n.done && (
+                <span
+                  className="absolute -top-2 -right-2 rotate-12 rounded-full bg-white px-2 py-1 text-base shadow-md dark:bg-slate-800"
+                  title="Připnuto"
+                >
+                  📌
+                </span>
+              )}
               {!n.done && n.priority !== "normal" && (
                 <span
                   className={`self-start rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${PRIORITY_BADGE[n.priority]}`}
@@ -392,6 +409,18 @@ function NotesView() {
                     className="rounded-xl bg-emerald-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-emerald-500/30 transition active:scale-95 hover:bg-emerald-600"
                   >
                     Vyřízeno
+                  </button>
+                )}
+                {!n.done && (
+                  <button
+                    onClick={() => togglePin(n)}
+                    className={`rounded-xl px-4 py-2 text-xs font-semibold transition active:scale-95 ${
+                      n.pinned
+                        ? "bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
+                        : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                    }`}
+                  >
+                    {n.pinned ? "📌 Odepnout" : "📌 Připnout"}
                   </button>
                 )}
                 {n.done && (
