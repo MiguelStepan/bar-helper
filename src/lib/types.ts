@@ -32,11 +32,15 @@ export type ChecklistItem = {
   created_at: string;
 };
 
+export type NotePriority = "normal" | "important" | "urgent";
+
 export type Note = {
   id: number;
   content: string;
   author_id: number | null;
   done: boolean;
+  priority: NotePriority;
+  pinned: boolean;
   created_at: string;
 };
 

@@ -2,7 +2,35 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import type { Employee, Note, NoteSigner } from "@/lib/types";
+import type { Employee, Note, NotePriority, NoteSigner } from "@/lib/types";
+
+const PRIORITY_LABEL: Record<NotePriority, string> = {
+  normal: "Normální",
+  important: "Důležité",
+  urgent: "Urgent",
+};
+
+const PRIORITY_WEIGHT: Record<NotePriority, number> = {
+  urgent: 3,
+  important: 2,
+  normal: 1,
+};
+
+// Barvy karet podle priority — barva nese význam, ne jen dekoraci.
+const PRIORITY_CARD: Record<NotePriority, string> = {
+  normal:
+    "border-amber-300/70 bg-yellow-100 shadow-amber-200/40 dark:border-amber-900/70 dark:bg-amber-950/30 dark:shadow-black/30",
+  important:
+    "border-orange-400/70 bg-orange-100 shadow-orange-300/40 dark:border-orange-800/70 dark:bg-orange-950/40 dark:shadow-black/30",
+  urgent:
+    "border-red-400/70 bg-red-100 shadow-red-300/50 dark:border-red-800/70 dark:bg-red-950/40 dark:shadow-black/30",
+};
+
+const PRIORITY_BADGE: Record<NotePriority, string> = {
+  normal: "bg-amber-200/80 text-amber-900 dark:bg-amber-900/60 dark:text-amber-100",
+  important: "bg-orange-300/80 text-orange-950 dark:bg-orange-900/60 dark:text-orange-100",
+  urgent: "bg-red-500 text-white",
+};
 import { useActiveProfile } from "@/lib/profile";
 import { EmployeeAvatar } from "@/components/EmployeeAvatar";
 import { ProfileGate } from "@/components/ProfileGate";
@@ -23,6 +51,7 @@ function NotesView() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [tab, setTab] = useState<"active" | "archive">("active");
   const [content, setContent] = useState("");
+  const [priority, setPriority] = useState<NotePriority>("normal");
   const [requireSignoff, setRequireSignoff] = useState(false);
   const [requiredIds, setRequiredIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,6 +97,7 @@ function NotesView() {
       .insert({
         content: content.trim(),
         author_id: profile?.id ?? null,
+        priority,
       })
       .select()
       .single();
@@ -86,6 +116,7 @@ function NotesView() {
         );
     }
     setContent("");
+    setPriority("normal");
     setRequireSignoff(false);
     setRequiredIds([]);
     load();
@@ -132,9 +163,17 @@ function NotesView() {
     load();
   };
 
-  const filtered = notes.filter((n) =>
-    tab === "active" ? !n.done : n.done,
-  );
+  const filtered = notes
+    .filter((n) => (tab === "active" ? !n.done : n.done))
+    .sort((a, b) => {
+      // Aktivní: priorita desc, pak created_at desc. Archiv: jen created_at desc.
+      if (tab === "active") {
+        const pa = PRIORITY_WEIGHT[a.priority] ?? 1;
+        const pb = PRIORITY_WEIGHT[b.priority] ?? 1;
+        if (pa !== pb) return pb - pa;
+      }
+      return b.created_at.localeCompare(a.created_at);
+    });
 
   return (
     <div className="space-y-6">
@@ -157,6 +196,23 @@ function NotesView() {
           className="w-full rounded-2xl border border-amber-300 bg-white px-3 py-2.5 text-sm transition focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-500/20 dark:border-amber-800 dark:bg-slate-900"
           required
         />
+
+        <div className="flex flex-wrap gap-2">
+          {(["normal", "important", "urgent"] as const).map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => setPriority(p)}
+              className={`rounded-full px-3 py-1 text-xs font-semibold transition active:scale-95 ${
+                priority === p
+                  ? PRIORITY_BADGE[p] + " ring-2 ring-offset-1 ring-slate-900/20 dark:ring-white/30"
+                  : "bg-white text-slate-600 dark:bg-slate-900 dark:text-slate-300"
+              }`}
+            >
+              {PRIORITY_LABEL[p]}
+            </button>
+          ))}
+        </div>
 
         <label className="flex items-center gap-2 text-sm font-medium">
           <input
@@ -251,9 +307,16 @@ function NotesView() {
               className={`flex flex-col gap-3 rounded-3xl border p-5 shadow-md ${
                 n.done
                   ? "border-slate-200/70 bg-slate-100/60 shadow-slate-200/40 dark:border-slate-800/70 dark:bg-slate-900/40 dark:shadow-black/30"
-                  : "border-amber-300/70 bg-yellow-100 shadow-amber-200/40 dark:border-amber-900/70 dark:bg-amber-950/30 dark:shadow-black/30"
+                  : PRIORITY_CARD[n.priority]
               }`}
             >
+              {!n.done && n.priority !== "normal" && (
+                <span
+                  className={`self-start rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${PRIORITY_BADGE[n.priority]}`}
+                >
+                  {PRIORITY_LABEL[n.priority]}
+                </span>
+              )}
               <p
                 className={`whitespace-pre-wrap text-lg font-medium leading-snug sm:text-xl ${
                   n.done ? "text-slate-500 line-through" : ""
