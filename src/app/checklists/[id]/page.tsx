@@ -132,7 +132,7 @@ function ChecklistDetail() {
     <div className="space-y-6">
       <Link
         href="/checklists"
-        className="text-sm text-slate-500 hover:underline"
+        className="text-sm text-slate-500 hover:text-blue-500 hover:underline"
       >
         ← Checklisty
       </Link>
@@ -143,11 +143,11 @@ function ChecklistDetail() {
             <input
               value={checklistName}
               onChange={(e) => setChecklistName(e.target.value)}
-              className="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-lg font-bold dark:border-slate-700 dark:bg-slate-950"
+              className="flex-1 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-lg font-bold focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950"
             />
             <button
               onClick={renameChecklist}
-              className="rounded-md bg-slate-900 px-3 py-2 text-sm text-white dark:bg-slate-100 dark:text-slate-900"
+              className="rounded-xl bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/30 transition active:scale-95 hover:bg-blue-600"
             >
               Uložit
             </button>
@@ -156,7 +156,7 @@ function ChecklistDetail() {
                 setEditingChecklist(false);
                 setChecklistName(checklist.name);
               }}
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700"
+              className="rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-900 transition active:scale-95 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
             >
               Zrušit
             </button>
@@ -164,7 +164,7 @@ function ChecklistDetail() {
         ) : (
           <div className="flex-1">
             <h1 className="text-3xl font-bold">{checklist.name}</h1>
-            <p className="text-sm text-slate-500">
+            <p className="mt-1 text-sm text-slate-500">
               Hotovo {doneCount} z {items.length}
             </p>
           </div>
@@ -174,19 +174,19 @@ function ChecklistDetail() {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setEditingChecklist(true)}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-700"
+              className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition active:scale-95 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               Přejmenovat
             </button>
             <button
               onClick={resetAll}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-700"
+              className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition active:scale-95 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               Reset
             </button>
             <button
               onClick={deleteChecklist}
-              className="rounded-md border border-red-300 px-3 py-1.5 text-sm text-red-700 dark:border-red-900 dark:text-red-300"
+              className="rounded-xl bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition active:scale-95 hover:bg-red-100 dark:bg-red-950/50 dark:text-red-300 dark:hover:bg-red-950"
             >
               Smazat
             </button>
@@ -200,17 +200,17 @@ function ChecklistDetail() {
           return (
             <li
               key={it.id}
-              className={`flex items-center gap-3 rounded-xl border p-3 transition ${
+              className={`flex items-center gap-3 rounded-2xl border p-4 shadow-sm transition ${
                 it.done
                   ? "border-emerald-200 bg-emerald-50 dark:border-emerald-900 dark:bg-emerald-950"
-                  : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"
+                  : "border-slate-200/70 bg-white dark:border-slate-800/70 dark:bg-slate-900"
               }`}
             >
               <button
                 onClick={() => toggle(it)}
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
+                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition active:scale-90 ${
                   it.done
-                    ? "border-emerald-500 bg-emerald-500 text-white"
+                    ? "border-emerald-500 bg-emerald-500 text-white shadow-md shadow-emerald-500/30"
                     : "border-slate-300 dark:border-slate-600"
                 }`}
                 aria-label={it.done ? "Zrušit odškrtnutí" : "Odškrtnout"}
@@ -224,7 +224,7 @@ function ChecklistDetail() {
                   {it.label}
                 </div>
                 {doneBy && (
-                  <div className="mt-0.5 flex items-center gap-1 text-xs text-slate-500">
+                  <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-500">
                     <EmployeeAvatar employee={doneBy} size="sm" />
                     <span>
                       {doneBy.name}
@@ -241,7 +241,7 @@ function ChecklistDetail() {
               </div>
               <button
                 onClick={() => removeItem(it.id)}
-                className="text-xs text-slate-400 hover:text-red-600"
+                className="text-xs text-slate-400 transition hover:text-red-600"
                 title="Smazat položku"
               >
                 ✕
@@ -256,11 +256,11 @@ function ChecklistDetail() {
           value={newLabel}
           onChange={(e) => setNewLabel(e.target.value)}
           placeholder="Nová položka — např. Spustit kávovar"
-          className="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-950"
+          className="flex-1 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950"
         />
         <button
           type="submit"
-          className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-300"
+          className="rounded-xl bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/30 transition active:scale-95 hover:bg-blue-600"
         >
           Přidat
         </button>

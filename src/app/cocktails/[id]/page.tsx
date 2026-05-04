@@ -58,7 +58,7 @@ function CocktailDetail() {
   if (editing) {
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Upravit recept</h1>
+        <h1 className="text-3xl font-bold">Upravit recept</h1>
         <CocktailForm
           cocktail={cocktail}
           onSaved={() => {
@@ -78,7 +78,10 @@ function CocktailDetail() {
 
   return (
     <article className="space-y-6">
-      <Link href="/cocktails" className="text-sm text-slate-500 hover:underline">
+      <Link
+        href="/cocktails"
+        className="text-sm text-slate-500 hover:text-blue-500 hover:underline"
+      >
         ← Recepty
       </Link>
 
@@ -87,13 +90,13 @@ function CocktailDetail() {
         <div className="flex gap-2">
           <button
             onClick={() => setEditing(true)}
-            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm dark:border-slate-700"
+            className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition active:scale-95 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             Upravit
           </button>
           <button
             onClick={remove}
-            className="rounded-md border border-red-300 px-3 py-1.5 text-sm text-red-700 dark:border-red-900 dark:text-red-300"
+            className="rounded-xl bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition active:scale-95 hover:bg-red-100 dark:bg-red-950/50 dark:text-red-300 dark:hover:bg-red-950"
           >
             Smazat
           </button>
@@ -105,15 +108,15 @@ function CocktailDetail() {
         <img
           src={cocktail.image_url}
           alt={cocktail.name}
-          className="max-h-96 w-full rounded-2xl object-cover"
+          className="max-h-96 w-full rounded-3xl object-cover shadow-md"
         />
       )}
 
       {stepsList.length > 0 ? (
-        <ul className="space-y-2 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+        <ul className="space-y-3 rounded-3xl border border-slate-200/70 bg-white p-6 shadow-md shadow-slate-200/40 dark:border-slate-800/70 dark:bg-slate-900 dark:shadow-black/30">
           {stepsList.map((s, i) => (
             <li key={i} className="flex gap-3">
-              <span className="text-sm font-bold text-slate-400">{i + 1}.</span>
+              <span className="text-sm font-bold text-blue-500">{i + 1}.</span>
               <span className="text-sm">{s}</span>
             </li>
           ))}

@@ -3,6 +3,7 @@ export type Employee = {
   name: string;
   initials: string;
   color: string | null;
+  emoji: string | null;
   created_at: string;
 };
 
