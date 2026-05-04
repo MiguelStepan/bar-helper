@@ -82,7 +82,7 @@ export function CocktailForm({ cocktail, onSaved, onCancel }: Props) {
   return (
     <form
       onSubmit={submit}
-      className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
+      className="space-y-5 rounded-3xl border border-slate-200/70 bg-white p-6 shadow-md shadow-slate-200/40 dark:border-slate-800/70 dark:bg-slate-900 dark:shadow-black/30"
     >
       <label className="block">
         <span className="text-sm font-medium">Název</span>
@@ -90,7 +90,7 @@ export function CocktailForm({ cocktail, onSaved, onCancel }: Props) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Mojito"
-          className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-950"
+          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950"
           required
         />
       </label>
@@ -102,7 +102,7 @@ export function CocktailForm({ cocktail, onSaved, onCancel }: Props) {
           onChange={(e) => setSteps(e.target.value)}
           rows={6}
           placeholder={`5 lístků máty\n2 lžičky cukru\nPromuddlovat\nLed + rum 50 ml\nDoplnit sodou`}
-          className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-950"
+          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950"
         />
       </label>
 
@@ -114,7 +114,7 @@ export function CocktailForm({ cocktail, onSaved, onCancel }: Props) {
             <img
               src={imageUrl}
               alt="Náhled"
-              className="h-32 w-32 rounded-md object-cover"
+              className="h-32 w-32 rounded-2xl object-cover shadow-md"
             />
           )}
           <div className="flex flex-col gap-2">
@@ -135,7 +135,7 @@ export function CocktailForm({ cocktail, onSaved, onCancel }: Props) {
               <button
                 type="button"
                 onClick={() => setImageUrl("")}
-                className="self-start text-xs text-red-600 underline"
+                className="self-start text-xs font-semibold text-red-600 underline-offset-4 hover:underline"
               >
                 Odebrat fotku
               </button>
@@ -145,7 +145,7 @@ export function CocktailForm({ cocktail, onSaved, onCancel }: Props) {
       </div>
 
       {error && (
-        <p className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+        <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
           {error}
         </p>
       )}
@@ -154,14 +154,14 @@ export function CocktailForm({ cocktail, onSaved, onCancel }: Props) {
         <button
           type="submit"
           disabled={saving || uploading}
-          className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-50 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-300"
+          className="rounded-xl bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/30 transition active:scale-95 hover:bg-blue-600 disabled:opacity-50"
         >
           {saving ? "Ukládám…" : cocktail ? "Uložit změny" : "Vytvořit recept"}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-md border border-slate-300 px-4 py-2 text-sm dark:border-slate-700"
+          className="rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-900 transition active:scale-95 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
         >
           Zrušit
         </button>

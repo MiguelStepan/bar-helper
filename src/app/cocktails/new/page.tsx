@@ -9,7 +9,7 @@ export default function NewCocktailPage() {
   return (
     <ProfileGate>
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Nový recept</h1>
+        <h1 className="text-3xl font-bold">Nový recept</h1>
         <CocktailForm
           onSaved={(id) => router.push(`/cocktails/${id}`)}
           onCancel={() => router.push("/cocktails")}

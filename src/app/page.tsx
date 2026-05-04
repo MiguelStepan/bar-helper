@@ -32,11 +32,11 @@ export default function ProfilePicker() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-8 py-8 sm:py-16">
+    <div className="flex flex-col items-center gap-10 py-10 sm:py-20">
       <div className="text-center">
-        <div className="text-5xl">🍸</div>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight">Bar Helper</h1>
-        <p className="mt-2 text-slate-600 dark:text-slate-400">
+        <div className="text-6xl">🍸</div>
+        <h1 className="mt-4 text-4xl font-bold tracking-tight">Bar Helper</h1>
+        <p className="mt-3 text-base text-slate-600 dark:text-slate-400">
           Vyber svůj profil — a pojďme do směny.
         </p>
       </div>
@@ -44,16 +44,20 @@ export default function ProfilePicker() {
       {loading && <p className="text-sm text-slate-500">Načítám profily…</p>}
 
       {error && (
-        <div className="max-w-md rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+        <div className="max-w-md rounded-2xl border border-red-300 bg-red-50 p-4 text-sm text-red-800 shadow-md dark:border-red-900 dark:bg-red-950 dark:text-red-200">
           Chyba načtení: {error}. Zkontroluj Supabase env hodnoty a SQL.
         </div>
       )}
 
       {!loading && !error && employees.length === 0 && (
-        <div className="max-w-md text-center">
-          <p className="text-slate-600 dark:text-slate-400">
+        <div className="max-w-md rounded-3xl border border-slate-200/70 bg-white p-10 text-center shadow-md dark:border-slate-800/70 dark:bg-slate-900">
+          <div className="text-5xl">👥</div>
+          <p className="mt-4 text-slate-600 dark:text-slate-400">
             Zatím žádný profil. Vytvoř první v sekci{" "}
-            <Link href="/employees" className="font-semibold underline">
+            <Link
+              href="/employees"
+              className="font-semibold text-blue-500 underline-offset-4 hover:underline"
+            >
               Zaměstnanci
             </Link>
             .
@@ -62,15 +66,17 @@ export default function ProfilePicker() {
       )}
 
       {!loading && employees.length > 0 && (
-        <div className="grid w-full max-w-2xl grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+        <div className="grid w-full max-w-3xl grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4">
           {employees.map((e) => (
             <button
               key={e.id}
               onClick={() => pick(e.id)}
-              className="flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+              className="flex flex-col items-center gap-3 rounded-3xl border border-slate-200/70 bg-white p-5 shadow-md shadow-slate-200/40 transition active:scale-95 hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800/70 dark:bg-slate-900 dark:shadow-black/30"
             >
-              <EmployeeAvatar employee={e} size="lg" />
-              <span className="text-sm font-medium">{e.name}</span>
+              <span className="transition-transform group-hover:scale-105">
+                <EmployeeAvatar employee={e} size="lg" />
+              </span>
+              <span className="text-sm font-semibold">{e.name}</span>
             </button>
           ))}
         </div>
@@ -78,7 +84,7 @@ export default function ProfilePicker() {
 
       <Link
         href="/employees"
-        className="text-sm text-slate-500 underline hover:text-slate-700 dark:hover:text-slate-300"
+        className="text-sm font-medium text-slate-500 underline-offset-4 hover:text-blue-500 hover:underline"
       >
         Spravovat profily
       </Link>

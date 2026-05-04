@@ -22,3 +22,14 @@ body {
   color: var(--foreground);
   font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
 }
+
+/* Fallback pro prohlížeče bez backdrop-filter (starší iOS Safari, in-app browsery).
+   Bez tohoto fallbacku je header skoro průhledný a text pod ním prosvítá. */
+@supports not ((backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0))) {
+  .bar-nav-blur {
+    background-color: rgb(255 255 255 / 0.95);
+  }
+  .dark .bar-nav-blur {
+    background-color: rgb(15 23 42 / 0.95);
+  }
+}

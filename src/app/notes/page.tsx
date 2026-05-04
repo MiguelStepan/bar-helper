@@ -139,36 +139,37 @@ function NotesView() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Lepíky</h1>
-        <p className="text-sm text-slate-500">
+        <h1 className="text-3xl font-bold">Lepíky</h1>
+        <p className="mt-1 text-sm text-slate-500">
           Komunikace mezi směnami a od majitele.
         </p>
       </div>
 
       <form
         onSubmit={create}
-        className="space-y-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950/40"
+        className="space-y-4 rounded-3xl border border-amber-200/70 bg-amber-50 p-6 shadow-md shadow-amber-200/40 dark:border-amber-900/70 dark:bg-amber-950/40 dark:shadow-black/30"
       >
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={3}
           placeholder={`Nový lepík od ${profile?.name ?? "tebe"}…`}
-          className="w-full rounded-md border border-amber-300 bg-white px-3 py-2 text-sm dark:border-amber-800 dark:bg-slate-900"
+          className="w-full rounded-2xl border border-amber-300 bg-white px-3 py-2.5 text-sm transition focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-500/20 dark:border-amber-800 dark:bg-slate-900"
           required
         />
 
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-2 text-sm font-medium">
           <input
             type="checkbox"
             checked={requireSignoff}
             onChange={(e) => setRequireSignoff(e.target.checked)}
+            className="h-4 w-4 rounded"
           />
           Vyžaduje podpis vybraných osob
         </label>
 
         {requireSignoff && (
-          <div className="flex flex-wrap gap-2 rounded-md bg-white p-3 dark:bg-slate-900">
+          <div className="flex flex-wrap gap-2 rounded-2xl bg-white p-3 dark:bg-slate-900">
             {employees.length === 0 && (
               <span className="text-xs text-slate-500">
                 Žádné profily — přidej v sekci Zaměstnanci.
@@ -181,9 +182,9 @@ function NotesView() {
                   key={emp.id}
                   type="button"
                   onClick={() => toggleRequired(emp.id)}
-                  className={`flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-xs transition ${
+                  className={`flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-xs font-medium transition active:scale-95 ${
                     selected
-                      ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950"
+                      ? "border-blue-500 bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-blue-200"
                       : "border-slate-300 dark:border-slate-700"
                   }`}
                 >
@@ -197,36 +198,46 @@ function NotesView() {
 
         <button
           type="submit"
-          className="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700"
+          className="rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-amber-500/30 transition active:scale-95 hover:bg-amber-600"
         >
           Nalepit
         </button>
       </form>
 
-      <div className="flex gap-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex gap-1 rounded-2xl bg-slate-100 p-1 dark:bg-slate-800">
         {(["active", "archive"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-3 py-2 text-sm font-medium transition ${
+            className={`flex-1 rounded-xl px-3 py-2 text-sm font-semibold transition active:scale-95 ${
               tab === t
-                ? "border-b-2 border-slate-900 text-slate-900 dark:border-slate-100 dark:text-slate-100"
-                : "text-slate-500"
+                ? "bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-slate-100"
+                : "text-slate-600 dark:text-slate-300"
             }`}
           >
-            {t === "active" ? `Aktivní (${notes.filter((n) => !n.done).length})` : "Archiv"}
+            {t === "active"
+              ? `Aktivní (${notes.filter((n) => !n.done).length})`
+              : "Archiv"}
           </button>
         ))}
       </div>
 
       {loading && <p className="text-sm text-slate-500">Načítám…</p>}
       {!loading && filtered.length === 0 && (
-        <p className="text-sm text-slate-500">
-          {tab === "active" ? "Žádné aktivní lepíky." : "Archiv prázdný."}
-        </p>
+        <div className="rounded-3xl border border-slate-200/70 bg-white p-10 text-center dark:border-slate-800/70 dark:bg-slate-900">
+          <div className="text-5xl">{tab === "active" ? "📝" : "📦"}</div>
+          <p className="mt-3 text-base font-medium">
+            {tab === "active" ? "Žádné aktivní lepíky" : "Archiv prázdný"}
+          </p>
+          <p className="mt-1 text-sm text-slate-500">
+            {tab === "active"
+              ? "Nalep první výš."
+              : "Až vyřídíš lepík, ulož se sem."}
+          </p>
+        </div>
       )}
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         {filtered.map((n) => {
           const author = n.author_id ? employeesById[n.author_id] : null;
           const mySigner = profile
@@ -237,14 +248,14 @@ function NotesView() {
           return (
             <article
               key={n.id}
-              className={`flex flex-col gap-3 rounded-2xl border p-4 shadow-sm ${
+              className={`flex flex-col gap-3 rounded-3xl border p-5 shadow-md ${
                 n.done
-                  ? "border-slate-200 bg-slate-100/60 dark:border-slate-800 dark:bg-slate-900/40"
-                  : "border-amber-300 bg-yellow-100 dark:border-amber-900 dark:bg-amber-950/30"
+                  ? "border-slate-200/70 bg-slate-100/60 shadow-slate-200/40 dark:border-slate-800/70 dark:bg-slate-900/40 dark:shadow-black/30"
+                  : "border-amber-300/70 bg-yellow-100 shadow-amber-200/40 dark:border-amber-900/70 dark:bg-amber-950/30 dark:shadow-black/30"
               }`}
             >
               <p
-                className={`whitespace-pre-wrap text-sm ${
+                className={`whitespace-pre-wrap text-lg font-medium leading-snug sm:text-xl ${
                   n.done ? "text-slate-500 line-through" : ""
                 }`}
               >
@@ -273,8 +284,8 @@ function NotesView() {
               </div>
 
               {totalRequired > 0 && (
-                <div className="space-y-1 rounded-md bg-white/70 p-2 dark:bg-slate-900/70">
-                  <div className="text-xs font-medium">
+                <div className="space-y-1.5 rounded-2xl bg-white/70 p-3 dark:bg-slate-900/70">
+                  <div className="text-xs font-semibold">
                     Podpisy: {totalSigned}/{totalRequired}
                   </div>
                   <div className="flex flex-wrap gap-1">
@@ -307,7 +318,7 @@ function NotesView() {
                 {mySigner && !mySigner.signed && (
                   <button
                     onClick={() => sign(n)}
-                    className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700"
+                    className="rounded-xl bg-blue-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-blue-500/30 transition active:scale-95 hover:bg-blue-600"
                   >
                     Podepsat
                   </button>
@@ -315,7 +326,7 @@ function NotesView() {
                 {totalRequired === 0 && !n.done && (
                   <button
                     onClick={() => markDone(n.id, true)}
-                    className="rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700"
+                    className="rounded-xl bg-emerald-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-emerald-500/30 transition active:scale-95 hover:bg-emerald-600"
                   >
                     Vyřízeno
                   </button>
@@ -323,14 +334,14 @@ function NotesView() {
                 {n.done && (
                   <button
                     onClick={() => markDone(n.id, false)}
-                    className="rounded-md border border-slate-300 px-3 py-1.5 text-xs dark:border-slate-700"
+                    className="rounded-xl bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 transition active:scale-95 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                   >
                     Znovu otevřít
                   </button>
                 )}
                 <button
                   onClick={() => remove(n.id)}
-                  className="ml-auto text-xs text-slate-400 hover:text-red-600"
+                  className="ml-auto text-xs text-slate-400 transition hover:text-red-600"
                 >
                   Smazat
                 </button>
