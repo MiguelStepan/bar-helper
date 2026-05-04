@@ -193,82 +193,6 @@ function NotesView() {
         </p>
       </div>
 
-      <form
-        onSubmit={create}
-        className="space-y-4 rounded-3xl border border-amber-200/70 bg-amber-50 p-6 shadow-md shadow-amber-200/40 dark:border-amber-900/70 dark:bg-amber-950/40 dark:shadow-black/30"
-      >
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows={3}
-          placeholder={`Nový lepík od ${profile?.name ?? "tebe"}…`}
-          className="w-full rounded-2xl border border-amber-300 bg-white px-3 py-2.5 text-sm transition focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-500/20 dark:border-amber-800 dark:bg-slate-900"
-          required
-        />
-
-        <div className="flex flex-wrap gap-2">
-          {(["normal", "important", "urgent"] as const).map((p) => (
-            <button
-              key={p}
-              type="button"
-              onClick={() => setPriority(p)}
-              className={`rounded-full px-3 py-1 text-xs font-semibold transition active:scale-95 ${
-                priority === p
-                  ? PRIORITY_BADGE[p] + " ring-2 ring-offset-1 ring-slate-900/20 dark:ring-white/30"
-                  : "bg-white text-slate-600 dark:bg-slate-900 dark:text-slate-300"
-              }`}
-            >
-              {PRIORITY_LABEL[p]}
-            </button>
-          ))}
-        </div>
-
-        <label className="flex items-center gap-2 text-sm font-medium">
-          <input
-            type="checkbox"
-            checked={requireSignoff}
-            onChange={(e) => setRequireSignoff(e.target.checked)}
-            className="h-4 w-4 rounded"
-          />
-          Vyžaduje podpis vybraných osob
-        </label>
-
-        {requireSignoff && (
-          <div className="flex flex-wrap gap-2 rounded-2xl bg-white p-3 dark:bg-slate-900">
-            {employees.length === 0 && (
-              <span className="text-xs text-slate-500">
-                Žádné profily — přidej v sekci Zaměstnanci.
-              </span>
-            )}
-            {employees.map((emp) => {
-              const selected = requiredIds.includes(emp.id);
-              return (
-                <button
-                  key={emp.id}
-                  type="button"
-                  onClick={() => toggleRequired(emp.id)}
-                  className={`flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-xs font-medium transition active:scale-95 ${
-                    selected
-                      ? "border-blue-500 bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-blue-200"
-                      : "border-slate-300 dark:border-slate-700"
-                  }`}
-                >
-                  <EmployeeAvatar employee={emp} size="sm" />
-                  <span>{emp.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        <button
-          type="submit"
-          className="rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-amber-500/30 transition active:scale-95 hover:bg-amber-600"
-        >
-          Nalepit
-        </button>
-      </form>
-
       <div className="flex gap-1 rounded-2xl bg-slate-100 p-1 dark:bg-slate-800">
         {(["active", "archive"] as const).map((t) => (
           <button
@@ -296,7 +220,7 @@ function NotesView() {
           </p>
           <p className="mt-1 text-sm text-slate-500">
             {tab === "active"
-              ? "Nalep první výš."
+              ? "Nalep první níž."
               : "Až vyřídíš lepík, ulož se sem."}
           </p>
         </div>
@@ -442,6 +366,85 @@ function NotesView() {
           );
         })}
       </div>
+
+      {tab === "active" && (
+        <form
+          onSubmit={create}
+          className="space-y-4 rounded-3xl border border-amber-200/70 bg-amber-50 p-6 shadow-md shadow-amber-200/40 dark:border-amber-900/70 dark:bg-amber-950/40 dark:shadow-black/30"
+        >
+          <h2 className="text-lg font-semibold">Nový lepík</h2>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            rows={3}
+            placeholder={`Nový lepík od ${profile?.name ?? "tebe"}…`}
+            className="w-full rounded-2xl border border-amber-300 bg-white px-3 py-2.5 text-sm transition focus:border-amber-500 focus:outline-none focus:ring-4 focus:ring-amber-500/20 dark:border-amber-800 dark:bg-slate-900"
+            required
+          />
+
+          <div className="flex flex-wrap gap-2">
+            {(["normal", "important", "urgent"] as const).map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setPriority(p)}
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition active:scale-95 ${
+                  priority === p
+                    ? PRIORITY_BADGE[p] + " ring-2 ring-offset-1 ring-slate-900/20 dark:ring-white/30"
+                    : "bg-white text-slate-600 dark:bg-slate-900 dark:text-slate-300"
+                }`}
+              >
+                {PRIORITY_LABEL[p]}
+              </button>
+            ))}
+          </div>
+
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              checked={requireSignoff}
+              onChange={(e) => setRequireSignoff(e.target.checked)}
+              className="h-4 w-4 rounded"
+            />
+            Vyžaduje podpis vybraných osob
+          </label>
+
+          {requireSignoff && (
+            <div className="flex flex-wrap gap-2 rounded-2xl bg-white p-3 dark:bg-slate-900">
+              {employees.length === 0 && (
+                <span className="text-xs text-slate-500">
+                  Žádné profily — přidej v sekci Zaměstnanci.
+                </span>
+              )}
+              {employees.map((emp) => {
+                const selected = requiredIds.includes(emp.id);
+                return (
+                  <button
+                    key={emp.id}
+                    type="button"
+                    onClick={() => toggleRequired(emp.id)}
+                    className={`flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-xs font-medium transition active:scale-95 ${
+                      selected
+                        ? "border-blue-500 bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-blue-200"
+                        : "border-slate-300 dark:border-slate-700"
+                    }`}
+                  >
+                    <EmployeeAvatar employee={emp} size="sm" />
+                    <span>{emp.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-amber-500/30 transition active:scale-95 hover:bg-amber-600"
+          >
+            Nalepit
+          </button>
+        </form>
+      )}
     </div>
   );
 }
